@@ -16,6 +16,19 @@ typedef struct _student{
 	Position next;
 }student;
 
+Position NoviUnos(char* , char* , int);
+int UnosPocetak(Position);
+int UnosKraj(Position);
+int UnosIspred(char *, Position);
+int UnosIza(char*, Position);
+Position PretragaPreth(char*, Position);
+Position Pretraga(char*, Position);
+int Izbrisi(char*, Position);
+int Ispis(Position);
+
+
+
+
 Position NoviUnos(char* Ime, char* Prez, int God)
 {
 	Position p = NULL;
@@ -75,28 +88,51 @@ int UnosKraj(Position P)
 	return 0;
 }
 
+int UnosIspred(char *str, Position P)
+{
+	Position Q = NULL;
+	Q = PretragaPreth(str, P);
+	UnosPocetak(Q);
+	if (NULL == Q)
+	{
+		printf("Neuspjesna pretraga elementa! \n");
+		return -1;
+	}
+	return 0;
+}
+
+int UnosIza(char *str, Position P)
+{
+	Position Q = NULL;
+	Q = Pretraga(str, P);
+	UnosPocetak(Q);
+	if (NULL == Q)
+	{
+		printf("Neuspjesna pretraga elementa! \n");
+		return -1;
+	}
+	return 0;
+}
+
 Position Pretraga(char *str,  Position P)
 {
-	while(P != NULL && strcmp(P->Prez , str) != 0)
+	while((NULL != P) && (strcmp(P->Prez , str)))
 		P = P->next;
 
 	if(NULL == P)
 	{
 		printf("Ne postoji trazeni element!\n");
+		return NULL;
 	}
-
-	else
-	{
 	return P;
-	}
 }
 
-Position PretragaPreth(Position P, char *str)
+Position PretragaPreth(char *str, Position P)
 {
 	Position prethodni = P;
 	P = P->next;
 
-	while (P->next != NULL && strcmp(P->Prez, str) != 0)
+	while (P !=NULL && strcmp(P->Prez, str) != 0)
 	{
 		prethodni = P;
 		P = P->next;
@@ -115,7 +151,7 @@ Position PretragaPreth(Position P, char *str)
 int Izbrisi(char *str, Position P)
 {
 	Position prethodni = NULL;
-	prethodni = PretragaPreth(P, str);
+	prethodni = PretragaPreth(str, P);
 
 	if(NULL == prethodni)
 	{
@@ -170,7 +206,8 @@ int main()
 	Izbrisi("Matic", head);              //test brisanje
 	Ispis(head->next);
 	printf("\n\n\n");
-	Izbrisi("Ivkovic", head);
+	UnosIspred("Kovacevic", head);       //test novih funkcija
+	UnosIza("Kovacevic", head);
 	Ispis(head->next);
 
 	system("pause");
