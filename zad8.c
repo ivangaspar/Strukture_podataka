@@ -54,16 +54,17 @@ int main()
 		if (strcmp(function, "mkdir\n") == 0)
 		{
 			makeDirectory(current);
+			printf("Directory made!\n");
 		}
 		else if (strcmp(function, "cd\n") == 0)
 		{
 			char name[MAX_SIZE] = { '\0' };
 			printf("\n Enter the name of the directory you would like to switch to: ");
 			fgets(name, MAX_SIZE - 1, stdin);
-			if (findDirectory(current->child, name))
+			if (findDirectory(current, name))
 			{
 				pushStack(&stog, current);
-				current = findDirectory(current->child, name);
+				current = findDirectory(current, name);
 				printf("\nYou are now in -->%s<-- directory\n", current->name);
 			}
 			else
@@ -143,13 +144,10 @@ positionDirectory findDirectory(positionDirectory current, char* name) {
 	{
 		return current;
 	}
-	while (current->sibling != NULL && strcmp(current->name, name) != 0)
+	while (current != NULL && strcmp(current->name, name) != 0)
 	{
 		current = current->sibling;
 	}
-	if (NULL == current) 
-		return NULL;
-	else
 		return current;
 }
 
@@ -169,18 +167,24 @@ int makeDirectory(positionDirectory current) {
 		current->child = newDirectory;
 		return SUCCESS;
 	}
-	if(strcmp(current->child->name, name) > 0)
+	else
 	{
-		newDirectory->sibling = current->child;
-		current->child = newDirectory;
-		return SUCCESS;
+		if (strcmp(current->child->name, name) > 0)
+		{
+			newDirectory->sibling = current->child;
+			current->child = newDirectory;
+			return SUCCESS;
+		}
+		else
+		{
+			current = current->child;
+			while (current->sibling != NULL && strcmp(current->sibling->name, name) < 0)
+				current = current->sibling;
+			newDirectory->sibling = current->sibling;
+			current->sibling = newDirectory;
+			return SUCCESS;
+		}
 	}
-	current = current->child;
-	while (current->sibling != NULL && strcmp(current->sibling->name, name) < 0)
-		current = current->sibling;
-	newDirectory->sibling = current->sibling;
-	current->sibling = newDirectory;
-	return SUCCESS;
 }
 
 int printFromCurrent(positionDirectory current) {
